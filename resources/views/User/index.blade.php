@@ -2,26 +2,33 @@
 
 @section('content')
     <div class="container">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Email</th>
-                </tr>
-            </thead>
-            @foreach ($userList as $user)
-                <tbody>
+        @if (count($userList) <= 0)
+            <div class="alert alert-danger">
+                <div class="d-flex justify-content-center align-item-center">Kullanıcı Yok.</div>
+            </div>
+        @else
+            <table class="table table-striped table-hover">
+                <thead>
                     <tr>
-                        <td>{{$user->id}}</td>
-                        <td>{{$user->name}}</td>
-                        <td>{{$user->surname}}</td>
-                        <td>{{$user->email}}</td>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Surname</th>
+                        <th scope="col">Email</th>
                     </tr>
-                </tbody>
-            @endforeach
+                </thead>
+                @foreach ($userList as $user)
+                    <tbody>
+                        <tr>
+                            <td>{{ $user->id }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->surname }}</td>
+                            <td>{{ $user->email }}</td>
+                        </tr>
+                    </tbody>
+                @endforeach
 
-        </table>
+            </table>
+        @endif
+
     </div>
 @endsection
