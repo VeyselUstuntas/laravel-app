@@ -2,8 +2,8 @@
 
 
 @section('content')
-    <div class="container mt-3 d-flex justify-content-end align-item-center">
-        <a href="/orders/add-order/" class="btn btn-info">Add Order</a>
+    <div class="container mt-2 d-flex justify-content-end align-items-center">
+        <a href="/orders/add-order/" class="btn btn-warning">Add Order</a>
     </div>
     <div class="container mt-3">
         @if (count($orderList) <= 0)

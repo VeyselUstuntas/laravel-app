@@ -1,6 +1,9 @@
 @extends('layouts.layout')
 
 @section('content')
+    <div class="container mt-2 d-flex justify-content-end align-items-center">
+        <a class="btn btn-warning" href="/product/add-product/">Add Product</a>
+    </div>
     <div class="container">
         @if (count($productsList) <= 0)
             <div class="alert alert-danger mt-2">

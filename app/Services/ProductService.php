@@ -14,4 +14,8 @@ class ProductService extends Service
         $products = Product::all();
         return $products;
     }
+
+    public function saveProduct(Product $product){
+        $product->save();
+    }
 }

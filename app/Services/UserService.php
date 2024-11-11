@@ -14,4 +14,8 @@ class UserService extends Service
         $users = User::all();
         return $users;
     }
+
+    public function saveUser(User $user){
+        $user->save();
+    }
 }
