@@ -21,7 +21,7 @@ class LoginController extends Controller
         ]);
 
 
-        if (Auth::attempt($validation)) {
+        if ($auth = Auth::attempt($validation)) {
             $request->session()->regenerate();
 
             return redirect()->intended("/home");

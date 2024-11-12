@@ -17,7 +17,8 @@ class RegisterController extends Controller
     {
         $validation = $request->validate([
             'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users'],
+            'email' => ['required', 'unique:users'],
+            'surname'=>['required'],
             'password' => ['required', 'min:6'],
         ]);
 
@@ -30,6 +31,6 @@ class RegisterController extends Controller
         ]);
         $user->save();
 
-        return redirect()->route("Login.index")->with("User Creation Success");
+        return redirect()->route("Login.index")->with("success","User Creation Success");
     }
 }

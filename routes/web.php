@@ -26,7 +26,7 @@ Route::get('/users',[UserController::class,"index"])->name("User.saveUser")->mid
 Route::get('/user/add-user/',[UserController::class,"getSaveUserForm"])->name("User.saveUser")->middleware(RedirectIfAuthenticated::class);
 Route::post('/user/add-user/',[UserController::class,"saveUser"])->name("User.saveUser")->middleware(RedirectIfAuthenticated::class);
 
-Route::get('/products',[ProductController::class,"index"])->name("Product.saveProduct")->middleware(RedirectIfAuthenticated::class);
+Route::get('/products',[ProductController::class,"index"])->name("Product.saveProduct");
 Route::get('/product/add-product/',[ProductController::class,"getSaveProductForm"])->name("Product.saveProduct")->middleware(RedirectIfAuthenticated::class);
 Route::post('/product/add-product/',[ProductController::class,"saveProduct"])->name("Product.saveProduct")->middleware(RedirectIfAuthenticated::class);
 

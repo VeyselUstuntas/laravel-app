@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Larevel App | </title>
+    <title>Larevel App | @yield('title') </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
 </head>
 
@@ -35,13 +35,12 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/products">Products</a>
-                        </li>
-
-                        <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/orders">Orders</a>
                         </li>
                     @endif
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/products">Products</a>
+                    </li>
 
                 </ul>
 
@@ -54,7 +53,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{route("logout")}}" class="nav-link"><span
+                            <a href="{{ route('logout') }}" class="nav-link"><span
                                     class="badge text-bg-warning pb-2 pt-2">Logout</span></a>
                         </li>
                     @endif

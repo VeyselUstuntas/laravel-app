@@ -1,4 +1,5 @@
 @extends('layouts.layout')
+@section('title','Save Product')
 
 @section('content')
     @if ($errors->any())

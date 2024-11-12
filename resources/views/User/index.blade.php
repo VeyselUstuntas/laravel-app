@@ -1,4 +1,5 @@
 @extends('layouts.layout')
+@section('title','Users')
 
 @section('content')
     <div class="container mt-2 d-flex justify-content-end align-items-center">

@@ -1,4 +1,5 @@
 @extends('layouts.layout')
+@section('title','Register')
 
 @section('content')
     @if ($errors->any())
@@ -22,19 +23,19 @@
 
             <div class="form-group mt-2">
                 <label for="name">Name</label>
-                <input type="text" name="name" id="name" class="form-control" placeholder="Enter Name" 
+                <input type="text" name="name" id="name" value="{{old('name')}}" class="form-control" placeholder="Enter Name" 
                     autofocus>
             </div>
             <div class="form-group mt-2">
                 <label for="surname">Surname</label>
-                <input type="text" name="surname" id="surname" class="form-control" placeholder="Enter Surname" 
+                <input type="text" name="surname" id="surname" value="{{old('surname')}}" class="form-control" placeholder="Enter Surname" 
                     autofocus>
             </div>
 
 
             <div class="form-group mt-2">
                 <label for="inputEmail">Email address</label>
-                <input type="text" name="email" id="inputEmail" class="form-control" placeholder="Email address" 
+                <input type="text" name="email" id="inputEmail" value="{{old('email')}}" class="form-control" placeholder="Email address" 
                     autofocus>
             </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
@@ -29,8 +30,8 @@ class UserController extends Controller
             [
                 'name' => ['required'],
                 'surname' => ['required'],
-                'email' => ['required','email'],
-                'password' => ['required']
+                'email' => ['required','unique:users'],
+                'password' => ['required', 'min:6'],
             ],
             [
                 'name.required' => 'Enter Name',
@@ -45,7 +46,7 @@ class UserController extends Controller
             'name'=> $request->name,
             'surname'=> $request->surname,
             'email'=>$request->email,
-            'password'=>$request->password
+            'password'=>Hash::make($request->password)
         ]);
         $this->userService->saveUser($user);
         return redirect()->route("User.saveUser")->with("success","User added successfully!");

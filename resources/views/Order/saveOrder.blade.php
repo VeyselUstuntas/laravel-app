@@ -1,4 +1,5 @@
 @extends('layouts.layout')
+@section('title','Save Order')
 
 @section('content')
     @if ($errors->any())
@@ -59,8 +60,6 @@
             const newItem = document.createElement('div');
 
             newItem.innerHTML = `
-                <div class = "card">
-                    <div class = "card-body">
                         <div class="form-group">
                             <label for="product_id">Select Product</label>
                             <select class="form-control" name="productId[]">
@@ -77,9 +76,6 @@
                             <label for="quantity">Quantitiy</label>
                             <input type="number" class="form-control" name="qty[]" placeholder="Enter Product Quantity" >
                         </div>
-                    </div>
-                </div>
-
             `;
 
             orderItemsContainer.appendChild(newItem);

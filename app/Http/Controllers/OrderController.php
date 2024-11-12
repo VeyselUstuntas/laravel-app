@@ -10,13 +10,12 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    private $orderList;
     public function __construct(protected OrderService $orderService) {}
 
     public function index()
     {
-        $this->orderList = $this->getAllOrders();
-        return view("Order.index", ["orderList" => $this->orderList]);
+        $orderList = $this->getAllOrders();
+        return view("Order.index", ["orderList" => $orderList]);
     }
 
     public function getAllOrders()
