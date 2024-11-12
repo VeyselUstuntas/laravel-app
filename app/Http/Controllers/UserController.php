@@ -29,7 +29,7 @@ class UserController extends Controller
             [
                 'name' => ['required'],
                 'surname' => ['required'],
-                'email' => ['required'],
+                'email' => ['required','email'],
                 'password' => ['required']
             ],
             [

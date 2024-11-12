@@ -34,7 +34,7 @@
 
             <div class="form-group mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" id="email" value="{{ old('email') }}"
+                <input type="text" class="form-control" name="email" id="email" value="{{ old('email') }}"
                     placeholder="Enter Mail Address">
             </div>
 
