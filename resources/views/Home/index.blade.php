@@ -18,10 +18,12 @@
                         <th>İlçe</th>
                     </thead>
                     <tbody>
+                        {{$query}}
+
                         @foreach ($districts as $district)
                             <tr>
-                                <td>{{ $district->city_name}}</td>
-                                <td>{{ $district->district_name }}</td>
+                                <td>{{ $district->city->name}}</td>
+                                <td>{{ $district->name }}</td>
                             </tr>
                         @endforeach
 
