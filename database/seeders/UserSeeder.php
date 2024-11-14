@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -11,10 +12,18 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->withOutOrm();
+        // $this->withOutOrm();
+        $this->withOrm();
     }
 
-    private function withOrm() {}
+    private function withOrm() {
+        User::all()->each(function($user){
+            $user->delete();
+        });
+        foreach ($this->userModel() as $user) {
+            User::create($user);
+        }
+    }
 
     private function withOutOrm()
     {

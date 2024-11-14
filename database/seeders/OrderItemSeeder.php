@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\OrderItem;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,8 @@ class OrderItemSeeder extends Seeder
 
     public function run(): void
     {
-        $this->addOrderItemWithOutOrm();
+        // $this->addOrderItemWithOutOrm();
+        $this->addOrderItemWithOrm();
     }
 
     private function addOrderItemWithOutOrm()
@@ -35,7 +37,26 @@ class OrderItemSeeder extends Seeder
         }
     }
 
-    private function addOrderItemWithOrm() {}
+    private function addOrderItemWithOrm()
+    {
+        $data = $this->getProductAndOrderList();
+        $productIds = $data['productIdList']->toArray();
+        $orderIds = $data['orderIdList'];
+        foreach ($orderIds as $orderId) {
+            $orderItemQty = random_int(2, 7);
+            foreach (range(1, $orderItemQty) as $number) {
+                $randomProductIndex = random_int(0, count($productIds) - 1);
+                $randomProductId = $productIds[$randomProductIndex]->id;
+                OrderItem::create(
+                    [
+                        'order_id' => $orderId->id,
+                        'product_id' => $randomProductId,
+                        'quantity' => 1
+                    ]
+                );
+            }
+        }
+    }
 
     private function getProductAndOrderList()
     {

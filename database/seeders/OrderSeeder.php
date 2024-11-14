@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +12,8 @@ class OrderSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->addOrderWithOutOrm();
+        // $this->addOrderWithOutOrm();
+        $this->addOrderWithOrm();
     }
 
 
@@ -24,5 +27,13 @@ class OrderSeeder extends Seeder
         }
     }
 
-    private function addOrderWithOrm() {}
+    private function addOrderWithOrm()
+    {
+        $userList = User::all();
+        foreach ($userList as $user) {
+            foreach (range(1, 10) as $step) {
+                Order::create(['user_id'=>$user->id]);
+            }
+        }
+    }
 }

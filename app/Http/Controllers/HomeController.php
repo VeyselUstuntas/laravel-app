@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\District;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PDO;
@@ -13,20 +16,32 @@ class HomeController extends Controller
     public function index()
     {
         // dd($this->getOrdersWithOutOrm());
-        return response()->json($this->getOrdersWithOutOrm());
+        // return response()->json($this->getOrdersWithOutOrm());
+        return response()->json($this->getOrdersWithOrm());
     }
 
-    public function getOrdersWithOutOrm(){
+    public function getOrdersWithOutOrm()
+    {
         $orders = DB::table('order_items')  // Burada düzeltme yapıldı
             ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
             ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
             ->leftJoin('users', 'orders.user_id', '=', 'users.id')
             ->selectRaw("users.name as customer_name, orders.id as order_id, products.name as product_name, order_items.quantity as piece")
             ->get();
-    
+
         return $orders;
     }
-    
+
+    public function getOrdersWithOrm()
+    {
+        $users = User::with([
+            'orders:id,user_id',
+            'orders.orderItems:order_id,product_id,quantity',
+            'orders.orderItems:id,name'
+        ])->get();
+        return $users;
+    }
+
 
     public function getCityAndDistrict()
     {
