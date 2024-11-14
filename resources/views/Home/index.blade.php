@@ -18,15 +18,14 @@
                         <th>İlçe</th>
                     </thead>
                     <tbody>
-                        {{$query}}
-
-                        @foreach ($districts as $district)
-                            <tr>
-                                <td>{{ $district->city->name}}</td>
-                                <td>{{ $district->name }}</td>
-                            </tr>
-                        @endforeach
-
+                        @isset($districts)
+                            @foreach ($districts as $district)
+                                <tr>
+                                    <td>{{ $district->city->name }}</td>
+                                    <td>{{ $district->name }}</td>
+                                </tr>
+                            @endforeach
+                        @endisset
                     </tbody>
                 </table>
             </div>

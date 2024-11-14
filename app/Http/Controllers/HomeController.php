@@ -12,14 +12,21 @@ class HomeController extends Controller
 {
     public function index()
     {
-        if (Auth::check()) {
-            dd($this->getQuery(),$this->getOrmQuery());
-            $district = $this->getCityAndDistrict();
-            return view("Home.index", ["districts" => $district]);
-        } else {
-            return redirect()->route("Login.index");
-        }
+        // dd($this->getOrdersWithOutOrm());
+        return response()->json($this->getOrdersWithOutOrm());
     }
+
+    public function getOrdersWithOutOrm(){
+        $orders = DB::table('order_items')  // Burada düzeltme yapıldı
+            ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
+            ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
+            ->leftJoin('users', 'orders.user_id', '=', 'users.id')
+            ->selectRaw("users.name as customer_name, orders.id as order_id, products.name as product_name, order_items.quantity as piece")
+            ->get();
+    
+        return $orders;
+    }
+    
 
     public function getCityAndDistrict()
     {
@@ -51,9 +58,9 @@ class HomeController extends Controller
         $rawQuery = $sql->toSql();
 
         foreach ($parameters as $param) {
-            $rawQuery = preg_replace('/\?/', $param, $rawQuery,1);
+            $rawQuery = preg_replace('/\?/', $param, $rawQuery, 1);
         }
-        
+
         return str_replace('`', '', $rawQuery);
     }
 
@@ -65,15 +72,14 @@ class HomeController extends Controller
             ->havingRaw('count(districts.city_id) < ?', [10])
             ->whereIn('cities.id', [1, 2, 3, 4])
             ->orderByRaw('cities.name, count(districts.city_id) desc');
-    
+
         $parameters = $query->getBindings();
         $rawQuery = $query->toSql();
-    
+
         foreach ($parameters as $param) {
             $rawQuery = preg_replace('/\?/', $param, $rawQuery, 1);
         }
-    
+
         return str_replace('`', '', $rawQuery);
     }
-    
 }
