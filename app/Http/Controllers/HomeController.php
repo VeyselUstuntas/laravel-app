@@ -13,8 +13,9 @@ class HomeController extends Controller
     public function index()
     {
         if (Auth::check()) {
+            dd($this->getQuery(),$this->getOrmQuery());
             $district = $this->getCityAndDistrict();
-            return view("Home.index", ["districts" => $district, "query" => $this->getOrmQuery()]);
+            return view("Home.index", ["districts" => $district]);
         } else {
             return redirect()->route("Login.index");
         }
