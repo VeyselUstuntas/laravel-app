@@ -8,9 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
-    public int $id;
-    public int $userId;
-    public function __construct() {}
+    protected $fillable = ["id","user_id"];
 
     public function users():BelongsTo{
         return $this->belongsTo(User::class);

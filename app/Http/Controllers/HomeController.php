@@ -17,12 +17,12 @@ class HomeController extends Controller
     {
         // dd($this->getOrdersWithOutOrm());
         // return response()->json($this->getOrdersWithOutOrm());
-        return response()->json($this->getOrdersWithOrm());
+        return $this->getOrdersWithOrm();
     }
 
     public function getOrdersWithOutOrm()
     {
-        $orders = DB::table('order_items')  // Burada düzeltme yapıldı
+        $orders = DB::table('order_items')
             ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
             ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
             ->leftJoin('users', 'orders.user_id', '=', 'users.id')
@@ -34,12 +34,30 @@ class HomeController extends Controller
 
     public function getOrdersWithOrm()
     {
-        $users = User::with([
-            'orders:id,user_id',
-            'orders.orderItems:order_id,product_id,quantity',
-            'orders.orderItems:id,name'
-        ])->get();
-        return $users;
+        $users = User::with(['orders.orderItems.product'])->get(); 
+
+        $data = $users->map(function ($user) {
+            return [
+                'name' => $user->name,
+                'email' => $user->email,
+                'orders' => $user->orders->map(function ($order) {
+                    return [
+                        'id' => $order->id,
+                        'order_items' => $order->orderItems->map(function ($orderItem) {
+                            return [
+                                'order_id' => $orderItem->order_id,
+                                'product_id' => $orderItem->product_id,
+                                'quantity' => $orderItem->quantity,
+                                'product_name' =>  $orderItem->product->name,
+                                'price' => $orderItem->product->price
+                            ];
+                        }),
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json($data);
     }
 
 
