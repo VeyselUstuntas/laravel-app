@@ -4,58 +4,70 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\District;
-use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use DebugBar\DataCollector\RequestDataCollector;
 use Illuminate\Support\Facades\DB;
 use PDO;
+use DebugBar\StandardDebugBar;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // dd($this->getOrdersWithOutOrm());
-        // return response()->json($this->getOrdersWithOutOrm());
+        // return view("Home.index", [$this->getOrdersWithOutOrm()]);
+        // return view("Home.index", [$this->getOrdersWithOrm()]);
+
         return $this->getOrdersWithOrm();
+        // return $this->getOrdersWithOutOrm();
     }
+
 
     public function getOrdersWithOutOrm()
     {
-        $orders = DB::table('order_items')
-            ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
-            ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
-            ->leftJoin('users', 'orders.user_id', '=', 'users.id')
-            ->selectRaw("users.name as customer_name, orders.id as order_id, products.name as product_name, order_items.quantity as piece")
+        $usersData = [];
+        $users = DB::table('users')
+            ->select('users.id', 'users.name', 'users.email')
             ->get();
 
-        return $orders;
+        foreach ($users as $user) {
+            $orders = DB::table('orders')
+                ->where('user_id', '=', $user->id)->select(['id', 'user_id'])
+                ->get()
+                ->map(function ($order) {
+                    $orderItems = DB::table('order_items')->select(['id', 'product_id', 'quantity'])
+                        ->where('order_id', '=', $order->id)
+                        ->get()
+                        ->map(function ($orderItem) {
+                            $product = DB::table('products')->select(['name', 'price'])
+                                ->where('id', '=', $orderItem->product_id)
+                                ->get();
+
+                            $orderItem->product = $product;
+                            return $orderItem;
+                        });
+
+                    $order->orderItems = $orderItems;
+                    return $order;
+                });
+
+            $user->orders = $orders;
+            $usersData[] = $user;
+        }
+
+        return response()->json($usersData);
     }
+
 
     public function getOrdersWithOrm()
     {
-        $users = User::with(['orders.orderItems.product'])->get(); 
+        $users = User::with([
+            'orders',
+            'orders.orderItems',
+            'orders.orderItems.product'
+        ]);
 
-        $data = $users->map(function ($user) {
-            return [
-                'name' => $user->name,
-                'email' => $user->email,
-                'orders' => $user->orders->map(function ($order) {
-                    return [
-                        'id' => $order->id,
-                        'order_items' => $order->orderItems->map(function ($orderItem) {
-                            return [
-                                'order_id' => $orderItem->order_id,
-                                'product_id' => $orderItem->product_id,
-                                'quantity' => $orderItem->quantity,
-                                'product_name' =>  $orderItem->product->name,
-                                'price' => $orderItem->product->price
-                            ];
-                        }),
-                    ];
-                }),
-            ];
-        });
+        $data = $users->get();
 
         return response()->json($data);
     }

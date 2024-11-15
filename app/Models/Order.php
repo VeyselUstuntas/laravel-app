@@ -8,14 +8,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
-    protected $fillable = ["id","user_id"];
+    protected $fillable = ["id", "user_id"];
+    /**
+     * @var array
+     */
+    protected $hidden = ['created_at', 'updated_at','user_id'];
 
-    public function users():BelongsTo{
-        return $this->belongsTo(User::class);
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function orderItems():HasMany{
-        return $this->hasMany(OrderItem::class);
-
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
 }
