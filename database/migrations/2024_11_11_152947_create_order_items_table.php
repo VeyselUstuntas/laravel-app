@@ -12,12 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
-            $table->integer('id')->primary(true);
-            $table->integer('order_id');
-            $table->integer('product_id');
+            $table->increments("id");
+            $table->unsignedInteger('order_id');
+            $table->foreign('order_id')
+                ->references("id")
+                ->on("orders")
+                ->onDelete("cascade");
+
+            $table->unsignedInteger('product_id');
+            $table->foreign("product_id")
+                ->references("id")
+                ->on("products")
+                ->onDelete("restrict");
             $table->integer('quantity');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+            $table->timestamps();
         });
     }
 
