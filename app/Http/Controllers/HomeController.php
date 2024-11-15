@@ -10,6 +10,7 @@ use DebugBar\DataCollector\RequestDataCollector;
 use Illuminate\Support\Facades\DB;
 use PDO;
 use DebugBar\StandardDebugBar;
+use Symfony\Component\VarDumper\VarDumper;
 
 class HomeController extends Controller
 {
@@ -18,8 +19,55 @@ class HomeController extends Controller
         // return view("Home.index", [$this->getOrdersWithOutOrm()]);
         // return view("Home.index", [$this->getOrdersWithOrm()]);
 
-        return $this->getOrdersWithOrm();
-        // return $this->getOrdersWithOutOrm();
+        // return $this->getOrdersWithOrm();
+        return $this->getOrdersWithOutOrm();
+        // return $this->getOrdersRawSqlQuery();
+    }
+
+    public function getOrdersRawSqlQuery()
+    {
+        $users = DB::select("SELECT id, name, email FROM users");
+
+        $usersData = array();
+        $ordersData = array();
+        $orderItemsData = array();
+
+        foreach ($users as $user) {
+            $orders = DB::select("SELECT * FROM orders WHERE user_id = :user_id", ['user_id' => $user->id]);
+
+            foreach ($orders as $order) {
+                $orderItems = DB::select("SELECT * FROM order_items WHERE order_id = :order_id", ['order_id' => $order->id]);
+
+                foreach ($orderItems as $orderItem) {
+                    $products = DB::select("SELECT id,name,price FROM products WHERE id = :product_id", ['product_id' => $orderItem->product_id]);
+
+                    $orderItemsData[] = [
+                        'order_item_id' => $orderItem->id,
+                        'order_id' => $orderItem->order_id,
+                        'product_id' => $orderItem->product_id,
+                        'quantity' => $orderItem->quantity,
+                        'products' => $products
+                    ];
+                    $products = [];
+                }
+
+                $ordersData[] = [
+                    'order_id' => $order->id,
+                    'order_items' => $orderItemsData
+                ];
+                $orderItemsData = [];
+            }
+
+
+            $usersData[] = [
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'orders' => $ordersData
+            ];
+            $ordersData = [];
+        }
+        return response()->json($usersData);
     }
 
 
@@ -54,7 +102,6 @@ class HomeController extends Controller
             $user->orders = $orders;
             $usersData[] = $user;
         }
-
         return response()->json($usersData);
     }
 
