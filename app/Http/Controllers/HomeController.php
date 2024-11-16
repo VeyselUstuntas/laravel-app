@@ -16,7 +16,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // return view("Home.index", [$this->getOrdersWithOrm()]);
+        return view("Home.index", [$this->getOrdersWithRawQuery()]);
 
         // return $this->getOrdersWithOptimizedOrm();
         // return $this->getOrdersWithNonOptimizedOrm();
@@ -141,8 +141,8 @@ class HomeController extends Controller
 
                     $orderItemsData[] = [
                         'order_item_id' => $orderItem->id,
-                        'order_id' => $orderItem->order_id,
-                        'product_id' => $orderItem->product_id,
+                        // 'order_id' => $orderItem->order_id,
+                        // 'product_id' => $orderItem->product_id,
                         'quantity' => $orderItem->quantity,
                         'products' => $products
                     ];
