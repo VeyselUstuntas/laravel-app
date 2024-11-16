@@ -16,15 +16,113 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // return view("Home.index", [$this->getOrdersWithOutOrm()]);
         // return view("Home.index", [$this->getOrdersWithOrm()]);
 
-        // return $this->getOrdersWithOrm();
-        return $this->getOrdersWithOutOrm();
-        // return $this->getOrdersRawSqlQuery();
+        // return $this->getOrdersWithOptimizedOrm();
+        // return $this->getOrdersWithNonOptimizedOrm();
+        // return $this->getOrdersWithNestedQueries();
+        return $this->getOrdersWithRawQuery();
     }
 
-    public function getOrdersRawSqlQuery()
+    public function getOrdersWithRawQuery()
+    {
+        $orders = DB::select("SELECT u.id as user_id, u.name as user_name, u.email as user_email,o.id as order_id, oi.id as order_item_id,  oi.quantity as piece, p.name as product_name, p.price as product_price FROM order_items as oi LEFT JOIN orders as o on oi.order_id = o.id LEFT JOIN products as p on oi.product_id = p.id LEFT JOIN users as u on o.user_id = u.id ORDER BY o.user_id ASC, oi.order_id ASC, oi.id ASC;");
+
+        $userId = $orders[0]->user_id;
+        $orderId = $orders[0]->order_id;
+        $userName = $orders[0]->user_name;
+        $userEmail = $orders[0]->user_email;
+
+        $usersData = array();
+        $ordersData = array();
+        $orderItemsData = array();
+        $productsData = array();
+
+        foreach ($orders as $order) {
+            if ($userId == $order->user_id) {
+                if ($orderId == $order->order_id) {
+                    $productsData = [
+                        "name" => $order->product_name,
+                        "price" => $order->product_price
+                    ];
+
+                    $orderItemsData[] = [
+                        "order_item_id" => $order->order_item_id,
+                        "quantity" => $order->piece,
+                        "products" => $productsData
+                    ];
+
+                    $productsData = [];
+                } else {
+                    $ordersData[] = [
+                        "order_id" => $orderId,
+                        "order_items" => $orderItemsData
+                    ];
+                    $orderId = $order->order_id;
+                    $orderItemsData = [];
+
+                    //--
+
+                    $productsData = [
+                        "name" => $order->product_name,
+                        "price" => $order->product_price
+                    ];
+
+                    $orderItemsData[] = [
+                        "order_item_id" => $order->order_item_id,
+                        "quantity" => $order->piece,
+                        "products" => $productsData
+                    ];
+
+                    $productsData = [];
+                }
+            } else {
+                $ordersData[] = [
+                    "order_id" => $orderId,
+                    "order_items" => $orderItemsData
+                ];
+                $orderId = $order->order_id;
+                $orderItemsData = [];
+
+                //--
+
+                $usersData[] = [
+                    "user_id" => $userId,
+                    "user_name" => $userName,
+                    "user_email" => $userEmail,
+                    "orders" => $ordersData
+                ];
+                $userId = $order->user_id;
+                $userName = $order->user_name;
+                $userEmail = $order->user_email;
+                $ordersData = [];
+            }
+        }
+        $ordersData[] = [
+            "order_id" => $orderId,
+            "order_items" => $orderItemsData
+        ];
+        $orderId = $order->order_id;
+        $orderItemsData = [];
+
+        //--
+
+        $usersData[] = [
+            "user_id" => $userId,
+            "user_name" => $userName,
+            "user_email" => $userEmail,
+            "orders" => $ordersData
+        ];
+        $userId = $order->user_id;
+        $userName = $order->user_name;
+        $userEmail = $order->user_email;
+        $ordersData = [];
+
+        return response()->json($usersData);
+    }
+
+
+    public function getOrdersWithNestedQueries()
     {
         $users = DB::select("SELECT id, name, email FROM users");
 
@@ -71,7 +169,7 @@ class HomeController extends Controller
     }
 
 
-    public function getOrdersWithOutOrm()
+    public function getOrdersWithNonOptimizedOrm()
     {
         $usersData = [];
         $users = DB::table('users')
@@ -106,7 +204,7 @@ class HomeController extends Controller
     }
 
 
-    public function getOrdersWithOrm()
+    public function getOrdersWithOptimizedOrm()
     {
         $users = User::with([
             'orders',
