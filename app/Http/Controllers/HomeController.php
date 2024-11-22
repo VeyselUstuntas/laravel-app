@@ -16,7 +16,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view("Home.index", [$this->getOrdersWithRawQuery()]);
+        // return view("Home.index", [$this->getOrdersWithRawQuery()]);
 
         // return $this->getOrdersWithOptimizedOrm();
         // return $this->getOrdersWithNonOptimizedOrm();

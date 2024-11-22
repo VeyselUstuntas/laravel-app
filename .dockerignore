@@ -1,0 +1,9 @@
+/vendor
+.gitignore
+.git
+.gitattributes
+.env
+.env.*
+.dockerignore
+Dockerfile
+docker-compose.yml
